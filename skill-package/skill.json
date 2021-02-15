@@ -1,0 +1,55 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-GB": {
+          "summary": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is.",
+          "examplePhrases": [
+            "When is bin day",
+            "What bins need to go out",
+            "help"
+          ],
+          "name": "stroud-bin-day",
+          "description": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is.",
+					"smallIconUri": "PATH_TO_SMALL_ICON",
+					"largeIconUri": "PATH_TO_LARGE_ICON"
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Sample Testing Instructions.",
+      "category": "KNOWLEDGE_AND_TRIVIA",
+      "distributionCountries": []
+    },
+    "apis": {
+      "custom": {}
+    },
+		"privacyAndCompliance": {
+			"allowsPurchases": false,
+			"usesPersonalInfo": true,
+			"isChildDirected": false,
+			"isExportCompliant": false,
+			"containsAds": false,
+			"locales": {
+				"en-GB": {
+					"privacyPolicyUrl": "PRIVACY_POLICY_GOES_HERE",
+					"termsOfUseUrl": "TERMS_OF_USE_URL_GOES_HERE"
+				}
+			}
+		},
+		"permissions": {
+			"name": [
+				"alexa:devices:all:address:country_and_postal_code:read"
+			]
+		},
+		"events": {
+			"publications": [],
+			"subscriptions": [],
+			"endpoint": "URL endpoint",
+			"regions": [],
+			"sslCertificateType": "Trusted"
+		},
+		"apis": {
+		},
+    "manifestVersion": "1.0"
+  }
+}
