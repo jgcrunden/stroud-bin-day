@@ -4,6 +4,7 @@
       "locales": {
         "en-GB": {
           "summary": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is.",
+					"keywords": [ "bin collection day", "recycling", "stroud district council" ],
           "examplePhrases": [
             "When is bin day",
             "What bins need to go out",
@@ -18,10 +19,7 @@
       "isAvailableWorldwide": false,
       "testingInstructions": "Sample Testing Instructions.",
       "category": "KNOWLEDGE_AND_TRIVIA",
-      "distributionCountries": []
-    },
-    "apis": {
-      "custom": {}
+      "distributionCountries": [ "GB" ]
     },
 		"privacyAndCompliance": {
 			"allowsPurchases": false,
@@ -41,14 +39,21 @@
 				"alexa:devices:all:address:country_and_postal_code:read"
 			]
 		},
-		"events": {
-			"publications": [],
-			"subscriptions": [],
-			"endpoint": "URL endpoint",
-			"regions": [],
-			"sslCertificateType": "Trusted"
-		},
 		"apis": {
+			"custom": {
+				"endpoint": {
+					"uri": "LAMBDA_ARN"
+				},
+				"regions": {
+					"GB": {
+						"uri": "LAMBDA_ARN" 
+					}
+				},
+				"interfaces": 
+				{
+					"type": "CAN_FULFILL_INTENT_REQUEST" 
+				}
+			}
 		},
     "manifestVersion": "1.0"
   }
