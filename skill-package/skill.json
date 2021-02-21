@@ -1,0 +1,55 @@
+{
+  "manifest": {
+    "publishingInformation": {
+      "locales": {
+        "en-GB": {
+          "summary": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is.",
+          "keywords": [
+            "bin collection day",
+            "recycling",
+            "stroud district council"
+          ],
+          "examplePhrases": [
+            "When is bin day",
+            "What bins need to go out",
+            "help"
+          ],
+          "name": "Bin Day: Stroud District Council",
+          "description": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is."
+        }
+      },
+      "isAvailableWorldwide": false,
+      "testingInstructions": "Sample Testing Instructions.",
+      "category": "KNOWLEDGE_AND_TRIVIA",
+      "distributionMode": "PRIVATE"
+    },
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": true,
+      "isChildDirected": false,
+      "isExportCompliant": false,
+      "containsAds": false,
+      "locales": {
+        "en-GB": {
+          "privacyPolicyUrl": "https://joshuacrunden.com",
+          "termsOfUseUrl": "https://joshuacrunden.com"
+        }
+      }
+    },
+    "permissions": [
+      {
+        "name": "alexa:devices:all:address:country_and_postal_code:read"
+      }
+    ],
+    "apis": {
+      "custom": {
+        "interfaces": [
+          {
+            "type": "CAN_FULFILL_INTENT_REQUEST"
+          }
+        ]
+      }
+    },
+    "manifestVersion": "1.0"
+  }
+}
