@@ -13,7 +13,7 @@
       "skillInfrastructure": {
         "type": "@ask-cli/cfn-deployer",
         "userConfig": {
-          "runtime": "Go1.x",
+          "runtime": "go1.x",
           "handler": "index.handler",
           "templatePath": "./infrastructure/cfn-deployer/skill-stack.yaml",
           "awsRegion": "eu-west-1"
