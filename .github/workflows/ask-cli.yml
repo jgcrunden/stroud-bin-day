@@ -16,7 +16,6 @@ jobs:
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
         id: ask
         env:
-          ASK_DEFAULT_PROFILE: ${{ secrets.ASK_DEFAULT_PROFILE }}
           ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
           ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
           ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
