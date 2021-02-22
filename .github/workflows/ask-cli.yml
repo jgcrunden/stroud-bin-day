@@ -16,5 +16,5 @@ jobs:
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
         with:
           # Command to execute
-          command: # default is ask --version
+          command: ask --version
 
