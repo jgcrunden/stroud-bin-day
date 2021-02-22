@@ -9,7 +9,7 @@ build:
 	zip $(ZIP) $(BIN)
 
 test:
-	@echo testing
+	go test -v ./...
 
 clean:
 	rm -f $(BIN) $(ZIP)
