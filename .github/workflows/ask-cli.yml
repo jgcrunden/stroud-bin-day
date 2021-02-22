@@ -11,10 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Alexa ASK AWS CLI Action
-        # You may pin to the exact commit or the version.
         # uses: xavidop/alexa-ask-aws-cli-docker@cc0039b7d4e650d4410584f1c616c5f529cbd906
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
+        env:
+          ASK_DEFAULT_PROFILE: ${{ secrets.ASK_DEFAULT_PROFILE }}
+          ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
+          ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
+          ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         with:
-          # Command to execute
           command: ask deploy
 
