@@ -13,8 +13,8 @@ jobs:
         uses: actions/checkout@v2
       - name: change ownership
         run: |
-          chmod 777 -R .
           ls -al
+          whoami
       - name: Alexa ASK AWS CLI Deploy
         # uses: xavidop/alexa-ask-aws-cli-docker@cc0039b7d4e650d4410584f1c616c5f529cbd906
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
@@ -27,6 +27,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SKILL_ID: ${{ secrets.SKILL_ID }}
         with:
-          command: 'ask deploy'
+          command: 'ask --version'
       - name: Get output
         run: echo "The result was ${{ steps.ask.outputs.result }}"
