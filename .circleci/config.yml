@@ -1,0 +1,8 @@
+orbs:
+  alexa: alexa/alexa@0.0.10
+version: 2.1
+workflows:
+  push:
+    jobs:
+      - alexa/diff
+      - alexa/deploy
