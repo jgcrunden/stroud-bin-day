@@ -23,6 +23,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SKILL_ID: ${{ secrets.SKILL_ID }}
         with:
-          command: 'cat ask-resources.json'
+          command: 'ask --version'
       - name: Get output
         run: echo "The result was ${{ steps.ask.outputs.result }}"
