@@ -1,0 +1,21 @@
+{
+  "askcliStatesVersion": "2020-03-31",
+  "profiles": {
+    "__ENVIRONMENT_ASK_PROFILE__": {
+      "skillId": "SKILL_ID",
+      "skillInfrastructure": {
+        "@ask-cli/cfn-deployer": {
+          "deployState": {
+            "default": {
+              "s3": {
+                "bucket": "BUCKET_NAME",
+                "key": "endpoint/build.zip"
+              },
+              "stackId": "STACK_ID"
+            }
+          }
+        }
+      }
+    }
+  }
+}
