@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: change ownership
+      - name: Substitute secrets into CloudFormation json
         run: |
           chmod 777 -R .
           sed -i "s/LAMBDA_ARN/${{ secrets.LAMBDA_ARN}}/" skill-package/skill.json
@@ -28,6 +28,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SKILL_ID: ${{ secrets.SKILL_ID }}
         with:
-          command: 'cat .ask/ask-states.json'
+          command: 'ask deploy'
       - name: Get output
         run: echo "The result was ${{ steps.ask.outputs.result }}"
