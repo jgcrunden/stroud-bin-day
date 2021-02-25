@@ -15,7 +15,7 @@ jobs:
         run: |
           chmod 777 -R .
           sed -i "s/LAMBDA_ARN/${{ secrets.LAMBDA_ARN}}/" skill-package/skill.json
-          sed -i -e "s/SKILL_ID/${{ secrets.SKILL_ID }}/" -e "s/BUCKET_NAME/${{ secrets.BUCKET_NAME }}/" -e "s/STACK_ID/${{ secrets.STACK_ID }}/" .ask/ask-states.json
+          sed -i -e "s/SKILL_ID/${{ secrets.SKILL_ID }}/" -e "s/BUCKET_NAME/${{ secrets.BUCKET_NAME }}/" -e "s|STACK_ID|${{ secrets.STACK_ID }}|" .ask/ask-states.json
       - name: Alexa ASK AWS CLI Deploy
         # uses: xavidop/alexa-ask-aws-cli-docker@cc0039b7d4e650d4410584f1c616c5f529cbd906
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
