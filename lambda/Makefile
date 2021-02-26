@@ -5,6 +5,7 @@ ZIP=function.zip
 ARN=${LAMBDA_ARN}
 build:
 	go fmt ./...
+	golint ./...
 	GOOS=linux GOARCH=amd64 go build -o $(BIN) $(SRC)
 
 deploy: build
