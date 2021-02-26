@@ -6,7 +6,6 @@ ZIP=function.zip
 build:
 	go fmt ./...
 	GOOS=linux go build -o $(BIN) $(SRC)
-	zip $(ZIP) $(BIN)
 
 test:
 	go test -v ./...
