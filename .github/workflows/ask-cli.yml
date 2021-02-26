@@ -12,7 +12,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build lambda
-        run: cd lambda && make build
+        run: |
+          (cd lambda && make build)
+          ls -al
+          ls -al lambda/bin
       - name: Substitute secrets into CloudFormation json
         run: |
           chmod 700 lambda/bin/lambda
