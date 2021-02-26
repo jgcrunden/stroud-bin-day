@@ -1,4 +1,4 @@
-https://github.com/jgcrunden/stroud-bin-day/actions/workflows/go.yml/badge.svg
+![Github Actions Status Badge](https://github.com/jgcrunden/stroud-bin-day/actions/workflows/go.yml/badge.svg)
 https://github.com/jgcrunden/stroud-bin-day/actions/workflows/ask-cli.yml/badge.svg
 
 # stroud-bin-day
