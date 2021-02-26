@@ -70,7 +70,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 
 	isInSDC := checkIfPostcodeIsInSDC(postcode, postcodes)
 	if !isInSDC {
-		return NewSimpleResponse("Cannot fulfill", fmt.Sprintf("I'm sorry, the postcode %s does not belong in Stroud District Council so I cannot look up your bin timetable. Please look for a similar skill in the skill store that is relevant to your area"))
+		return NewSimpleResponse("Cannot fulfill", fmt.Sprintf("I'm sorry, the postcode %s does not belong in Stroud District Council so I cannot look up your bin timetable. Please look for a similar skill in the skill store that is relevant to your area", postcode))
 	}
 
 	UPRN := getUPRNFromDynamoDB(postcode)
