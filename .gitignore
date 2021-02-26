@@ -16,6 +16,6 @@
 
 .ask/lambda
 
-bin/*
+*/bin/*
 
 secrets.txt
