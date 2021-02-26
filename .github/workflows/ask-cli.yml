@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Substitute secrets into CloudFormation json
         run: |
-          chmod 777 -R .
+          #chmod 777 -R .
           sed -i "s/LAMBDA_ARN/${{ secrets.LAMBDA_ARN}}/" skill-package/skill.json
           sed -i -e "s/SKILL_ID/${{ secrets.SKILL_ID }}/" -e "s/BUCKET_NAME/${{ secrets.BUCKET_NAME }}/" -e "s|STACK_ID|${{ secrets.STACK_ID }}|" .ask/ask-states.json
       - name: Alexa ASK AWS CLI Deploy
@@ -27,4 +27,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SKILL_ID: ${{ secrets.SKILL_ID }}
         with:
-          command: 'ask deploy'
+          command: 'su -c "ask deploy"'
