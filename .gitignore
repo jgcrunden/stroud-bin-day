@@ -16,6 +16,7 @@
 
 .ask/lambda
 
-bin/*
-
+*/bin/*
+function.zip
 secrets.txt
+script.sh
