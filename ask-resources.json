@@ -14,7 +14,7 @@
         "type": "@ask-cli/cfn-deployer",
         "userConfig": {
           "runtime": "go1.x",
-          "handler": "index.handler",
+          "handler": "bin/lambda",
           "templatePath": "./infrastructure/cfn-deployer/skill-stack.yaml",
           "awsRegion": "eu-west-1"
         }
