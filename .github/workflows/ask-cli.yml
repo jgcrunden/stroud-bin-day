@@ -19,6 +19,10 @@ jobs:
       - name: Alexa ASK AWS CLI Deploy
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
         id: ask
+        run: |
+          id
+          ls -al
+          cat /etc/passwd
         env:
           ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
           ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
@@ -26,5 +30,3 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SKILL_ID: ${{ secrets.SKILL_ID }}
-        with:
-          command: 'su && "ask deploy"'
