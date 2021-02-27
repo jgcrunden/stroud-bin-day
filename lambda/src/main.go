@@ -64,13 +64,13 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	client := &http.Client{}
 	postcode, err := getUserPostcode(deviceID, accessToken, apiEndpoint, client)
 	if err != nil {
-		// do something with error
+		return AskForPermissionResponse("To retrieve your bin collection day I require your postcode.", []string{"read::alexa:device:all:address:country_and_postal_code"})
 	}
 	fmt.Println(postcode)
 
 	isInSDC := checkIfPostcodeIsInSDC(postcode, postcodes)
 	if !isInSDC {
-		return NewSimpleResponse("Cannot fulfill", fmt.Sprintf("I'm sorry, the postcode %s does not belong in Stroud District Council so I cannot look up your bin timetable. Please look for a similar skill in the skill store that is relevant to your area", postcode))
+		return NewSimpleResponse("Cannot fulfill", fmt.Sprintf("I'm sorry, the postcode %s does not belong in Stroud District Council so I cannot look up your bin timetable. Please look for a similar skill in the skill store that is relevant to your area.", postcode))
 	}
 
 	UPRN := getUPRNFromDynamoDB(postcode)
@@ -84,7 +84,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 
 		success := addPostcodeAndUPRNToDynamoDB(postcode, UPRN)
 		if !success {
-			return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, something went wrong. Please file a bug to the developer"))
+			return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, something went wrong. Please file a bug to the developer."))
 		}
 
 	}

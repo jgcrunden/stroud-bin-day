@@ -1,5 +1,7 @@
 package main
 
+// Most of this request.go file is take from https://github.com/arienmalec/alexa-go with a few additions for greater functionality
+
 // constants
 
 // built in intents

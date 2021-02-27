@@ -1,5 +1,7 @@
 package main
 
+// Most of this response.go file is take from https://github.com/arienmalec/alexa-go with a few additions for greater functionality
+
 //NewSimpleResponse builds a session response
 func NewSimpleResponse(title string, text string) Response {
 	r := Response{
@@ -17,6 +19,27 @@ func NewSimpleResponse(title string, text string) Response {
 			ShouldEndSession: true,
 		},
 	}
+	return r
+}
+
+// AskForPermissionResponse builds as response to ask the user for permission to some specific information
+func AskForPermissionResponse(text string, permissions []string) Response {
+	r := Response{
+		Version: "1.0",
+		Body: ResBody{
+			OutputSpeech: &Payload{
+				Type: "PlainText",
+				Text: text,
+			},
+			Card: &Payload{
+				Type:        "AskForPermissionsConsent",
+				Permissions: permissions,
+			},
+		},
+	}
+	return r
+	return r
+	return r
 	return r
 }
 
@@ -73,10 +96,11 @@ type Image struct {
 
 // Payload ...
 type Payload struct {
-	Type    string `json:"type,omitempty"`
-	Title   string `json:"title,omitempty"`
-	Text    string `json:"text,omitempty"`
-	SSML    string `json:"ssml,omitempty"`
-	Content string `json:"content,omitempty"`
-	Image   Image  `json:"image,omitempty"`
+	Type        string   `json:"type,omitempty"`
+	Title       string   `json:"title,omitempty"`
+	Text        string   `json:"text,omitempty"`
+	SSML        string   `json:"ssml,omitempty"`
+	Content     string   `json:"content,omitempty"`
+	Image       Image    `json:"image,omitempty"`
+	Permissions []string `json:"permissions"`
 }
