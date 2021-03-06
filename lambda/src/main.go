@@ -29,6 +29,7 @@ func checkIfPostcodeIsInSDC(postcode string, postcodes []string) bool {
 
 // getUPRNFromDynamoDB uses postcode to query dyamoDB for UPRN. Returns URPN if entry exists, else returns -1
 func getUPRNFromDynamoDB(postcode string) (UPRN int64) {
+	UPRN = -1
 	return
 }
 
@@ -41,7 +42,7 @@ func addPostcodeAndUPRNToDynamoDB(postcode string, URPN int64) bool {
 
 // lookupUPRNForPostcodeViaAPI takes the postcode and calls external API to lookup UPRN. Returns UPRN if successful, -1 if not
 func lookupUPRNForPostcodeViaAPI(postcode string, client *http.Client) (URPN int64) {
-	return
+	return -1
 }
 
 // getMyHousePageFromStroudGov takes the URPN and an http Client and makes an http request to stroud.gov.uk website. Returns the html page containing bin collection days

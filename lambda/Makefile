@@ -13,7 +13,7 @@ deploy: build
 	aws lambda update-function-code --function-name $(ARN) --zip-file fileb://${ZIP}
 	
 test:
-	go test -v ./...
+	go test -v ./... -cover
 
 clean:
 	rm -f $(BIN) $(ZIP)
