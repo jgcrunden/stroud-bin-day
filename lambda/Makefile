@@ -1,8 +1,12 @@
-.PHONY=build deploy test clean
+.PHONY=build deploy test clean deps
 SRC=src/main.go src/request.go src/response.go
 BIN=bin/lambda
 ZIP=function.zip
 ARN=${LAMBDA_ARN}
+
+deps:
+	go get -u ./...
+
 build:
 	go fmt ./...
 	golint ./...
@@ -12,7 +16,7 @@ deploy: build
 	zip $(ZIP) $(BIN)
 	aws lambda update-function-code --function-name $(ARN) --zip-file fileb://${ZIP}
 	
-test:
+test: deps
 	go test -v ./... -cover
 
 clean:
