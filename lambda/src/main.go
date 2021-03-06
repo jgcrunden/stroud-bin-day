@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
-	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -110,7 +110,7 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 	}
 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
+	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}
