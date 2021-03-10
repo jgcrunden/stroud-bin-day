@@ -49,6 +49,9 @@ Resources:
       Role: !GetAtt AlexaSkillIAMRole.Arn
       MemorySize: 512
       Timeout: 15
+      Environment:
+        Variables:
+          TABLE_NAME: !GetAtt DynamoDBTable.TableName
   AlexaSkillFunctionEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
