@@ -16,7 +16,7 @@ Resources:
   AlexaSkillIAMRole:
       Type: AWS::IAM::Role
       Properties:
-	    RoleName: "stroud-bin-day"
+        RoleName: "stroud-bin-day"
         AssumeRolePolicyDocument:
           Version: 2012-10-17
           Statement:
@@ -40,7 +40,7 @@ Resources:
   AlexaSkillFunction:
     Type: AWS::Lambda::Function
     Properties:
-	  FunctionName: "stroud-bin-day"
+      FunctionName: "stroud-bin-day"
       Code:
         S3Bucket: !Ref CodeBucket
         S3Key: !Ref CodeKey
@@ -60,7 +60,7 @@ Resources:
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
-	  TableName: "stroud-bin-day"
+      TableName: "stroud-bin-day"
       AttributeDefinitions: 
         - AttributeName: "Postcode"
           AttributeType: "S"
