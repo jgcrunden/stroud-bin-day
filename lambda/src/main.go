@@ -43,8 +43,8 @@ func checkIfPostcodeIsInSDC(postcode string, postcodes []string) bool {
 // getUPRNFromDynamoDB uses postcode to query dyamoDB for UPRN. Returns URPN if entry exists, else returns -1
 func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN int64) {
 	UPRN = -1
-	result, err := svc.GetItem(&dynamodb.GetItemInput{
-		TableName: aws.String(
+	//result, err := svc.GetItem(&dynamodb.GetItemInput{
+	//	TableName: aws.String(
 	return
 }
 
