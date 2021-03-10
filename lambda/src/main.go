@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -11,9 +14,19 @@ import (
 	"time"
 )
 
+var (
+	tableName string
+)
+
 //Address a struct to store the postalCode when unmarshalling a request to the Alexa address endpoint
 type Address struct {
 	PostalCode string `json:"postalCode"`
+}
+
+// Item is a struct to hold dynamoDB entries
+type Item struct {
+	Postcode string
+	UPRN     int64
 }
 
 func checkIfPostcodeIsInSDC(postcode string, postcodes []string) bool {
@@ -28,8 +41,10 @@ func checkIfPostcodeIsInSDC(postcode string, postcodes []string) bool {
 }
 
 // getUPRNFromDynamoDB uses postcode to query dyamoDB for UPRN. Returns URPN if entry exists, else returns -1
-func getUPRNFromDynamoDB(postcode string) (UPRN int64) {
+func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN int64) {
 	UPRN = -1
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(
 	return
 }
 
@@ -74,7 +89,9 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 		return NewSimpleResponse("Cannot fulfill", fmt.Sprintf("I'm sorry, the postcode %s does not belong in Stroud District Council so I cannot look up your bin timetable. Please look for a similar skill in the skill store that is relevant to your area.", postcode))
 	}
 
-	UPRN := getUPRNFromDynamoDB(postcode)
+	sess := session.New()
+	svc := dynamodb.New(sess)
+	UPRN := getUPRNFromDynamoDB(postcode, svc)
 	if UPRN == -1 {
 		// UPRN is not in dynamoDB so lookup with API
 		UPRN = lookupUPRNForPostcodeViaAPI(postcode, client)

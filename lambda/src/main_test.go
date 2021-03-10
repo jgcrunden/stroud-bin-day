@@ -1,8 +1,8 @@
 package main
 
 import (
-	"testing"
 	"net/http"
+	"testing"
 )
 
 func TestCheckIfPostcodeIsInSDCWhereItIs(t *testing.T) {
@@ -19,6 +19,15 @@ func TestCheckIfPostcodeIsInSDCWhereItIsNot(t *testing.T) {
 		t.Error("Expected false, got:", result)
 	}
 }
+
+type mockDynamoDBClient struct {
+	dynamodbiface.DynamoDBAPI
+}
+
+func (m *mockDynamoDBClient) GetItem(*dynamodb.GetItemInput) (*dynamodb.GetItemOutput, error) {
+	
+}
+
 func TestGetUPRNFromDynamoDBWherePostcodeExists(t *testing.T) {
 	result := getUPRNFromDynamoDB("ABC 1234")
 	if result == -1 {
