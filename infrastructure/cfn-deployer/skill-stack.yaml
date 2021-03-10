@@ -16,7 +16,6 @@ Resources:
   AlexaSkillIAMRole:
       Type: AWS::IAM::Role
       Properties:
-        RoleName: "stroud-bin-day"
         AssumeRolePolicyDocument:
           Version: 2012-10-17
           Statement:
