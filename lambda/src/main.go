@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
+	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"io/ioutil"
 	"net/http"
@@ -15,7 +17,7 @@ import (
 )
 
 var (
-	tableName string
+	tableName = os.Getenv("TABLE_NAME")
 )
 
 //Address a struct to store the postalCode when unmarshalling a request to the Alexa address endpoint
@@ -43,8 +45,24 @@ func checkIfPostcodeIsInSDC(postcode string, postcodes []string) bool {
 // getUPRNFromDynamoDB uses postcode to query dyamoDB for UPRN. Returns URPN if entry exists, else returns -1
 func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN int64) {
 	UPRN = -1
-	//result, err := svc.GetItem(&dynamodb.GetItemInput{
-	//	TableName: aws.String(
+	result, err := svc.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(tableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"Postcode": {
+				S: aws.String(postcode),
+			},
+		},
+	})
+
+	if result.Item == nil {
+		return
+	}
+	item := Item{}
+	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
+	if err != nil {
+		fmt.Printf("Issue unmarshalling table data, %v", err)
+	}
+	UPRN = item.UPRN
 	return
 }
 
