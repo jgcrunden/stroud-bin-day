@@ -1,10 +1,11 @@
 package main
 
 import (
-//	"net/http"
-	"testing"
+	//	"net/http"
+	"errors"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"testing"
 )
 
 func TestCheckIfPostcodeIsInSDCWhereItIs(t *testing.T) {
@@ -35,7 +36,7 @@ func (m *mockDynamoDBClientSuccess) GetItem(*dynamodb.GetItemInput) (*dynamodb.G
 	av2 := dynamodb.AttributeValue{}
 	av2.SetN("123456789")
 	item["Postcode"] = &av1
-	item["UPRN"] =&av2
+	item["UPRN"] = &av2
 	response.SetConsumedCapacity(&cc)
 	response.SetItem(item)
 	return &response, nil
@@ -73,19 +74,32 @@ func TestGetUPRNFromDynamoDBWherePostcodeDoesNotExists(t *testing.T) {
 		t.Error("Expected a negative number to indicate postcode does not exist, got", result)
 	}
 }
-//func TestAddPostcodeAndUPRNToDynamoDBWhenSuccessful(t *testing.T) {
-//	result := addPostcodeAndUPRNToDynamoDB("SW1A 2AA", 123456789)
-//	if !result {
-//		t.Error("Expected true to indicate adding postcode and UPRN was successful, got", result)
-//	}
-//}
-//func TestAddPostcodeAndUPRNToDynamoDBWhenUnsuccessful(t *testing.T) {
-//	result := addPostcodeAndUPRNToDynamoDB("SW1A 2AA", 123456789)
-//	if result {
-//		t.Error("Expected false to indicate adding postcode and UPRN was unsuccessful, got", result)
-//	}
-//}
-//
+
+func (m *mockDynamoDBClientSuccess) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
+	response := dynamodb.PutItemOutput{}
+
+	return &response, nil
+}
+func TestAddPostcodeAndUPRNToDynamoDBWhenSuccessful(t *testing.T) {
+	mockSvc := mockDynamoDBClientSuccess{}
+	result := addPostcodeAndUPRNToDynamoDB("SW1A 2AA", 123456789, &mockSvc)
+	if !result {
+		t.Error("Expected true to indicate adding postcode and UPRN was successful, got", result)
+	}
+}
+
+func (m *mockDynamoDBClientFail) PutItem(input *dynamodb.PutItemInput) (*dynamodb.PutItemOutput, error) {
+	err := errors.New("ResourceNotFoundException")
+	return nil, err
+}
+func TestAddPostcodeAndUPRNToDynamoDBWhenUnsuccessful(t *testing.T) {
+	mockSvc := mockDynamoDBClientFail{}
+	result := addPostcodeAndUPRNToDynamoDB("SW1A 2AA", 123456789, &mockSvc)
+	if result {
+		t.Error("Expected false to indicate adding postcode and UPRN was unsuccessful, got", result)
+	}
+}
+
 //func TestLookupUPRNForPostcodeViaAPIWhereSuccessful(t *testing.T) {
 //	client := &http.Client{}
 //	result := lookupUPRNForPostcodeViaAPI("SW1A 2AA", client)

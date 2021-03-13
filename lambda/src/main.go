@@ -67,10 +67,31 @@ func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN i
 }
 
 // addPostcodeAndUPRNToDynamoDB adds the postcode and corresponding URPN to dynamoDB for future look up. Takes the postcode UPRN and returns true if successful, false if not
-func addPostcodeAndUPRNToDynamoDB(postcode string, URPN int64) bool {
-	result := false
+func addPostcodeAndUPRNToDynamoDB(postcode string, UPRN int64, svc dynamodbiface.DynamoDBAPI) (result bool) {
+	result = false
+	entry := Item{
+		Postcode: postcode,
+		UPRN:     UPRN,
+	}
 
-	return result
+	av, err := dynamodbattribute.MarshalMap(entry)
+	if err != nil {
+		fmt.Printf("Error Marshalling Item struct %s", err)
+		return
+	}
+
+	input := &dynamodb.PutItemInput{
+		Item:      av,
+		TableName: aws.String(tableName),
+	}
+
+	_, err = svc.PutItem(input)
+	if err != nil {
+		fmt.Printf("Error adding item to database: %s", err)
+		return
+	}
+	result = true
+	return
 }
 
 // lookupUPRNForPostcodeViaAPI takes the postcode and calls external API to lookup UPRN. Returns UPRN if successful, -1 if not
@@ -118,7 +139,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 			return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, something went wrong getting your property details from the postcode I have recorded against your Amazon device."))
 		}
 
-		success := addPostcodeAndUPRNToDynamoDB(postcode, UPRN)
+		success := addPostcodeAndUPRNToDynamoDB(postcode, UPRN, svc)
 		if !success {
 			return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, something went wrong. Please file a bug to the developer."))
 		}
