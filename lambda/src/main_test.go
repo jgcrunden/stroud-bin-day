@@ -5,6 +5,8 @@ import (
 	"errors"
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 )
 
@@ -100,21 +102,32 @@ func TestAddPostcodeAndUPRNToDynamoDBWhenUnsuccessful(t *testing.T) {
 	}
 }
 
-//func TestLookupUPRNForPostcodeViaAPIWhereSuccessful(t *testing.T) {
-//	client := &http.Client{}
-//	result := lookupUPRNForPostcodeViaAPI("SW1A 2AA", client)
-//	if result == -1 {
-//		t.Error("Expected a UPRN, got", result)
-//	}
-//}
-//
-//func TestLookupUPRNForPostcodeViaAPIWhereUnsuccessful(t *testing.T) {
-//	client := &http.Client{}
-//	result := lookupUPRNForPostcodeViaAPI("SW1A 2AA", client)
-//	if result != -1 {
-//		t.Error("Expected -1 to indicate a failed API call", result)
-//	}
-//}
+func TestLookupUPRNForPostcodeViaAPIWhereSuccessful(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte(`{ "result": [ { "postcode": "ID1 1QD", "postcode_inward": "1QD", "postcode_outward": "ID1", "post_town": "LONDON", "dependant_locality": "", "double_dependant_locality": "", "thoroughfare": "Barons Court Road", "dependant_thoroughfare": "", "building_number": "2", "building_name": "", "sub_building_name": "", "po_box": "", "department_name": "", "organisation_name": "", "udprn": 25962203, "umprn": "", "postcode_type": "S", "su_organisation_indicator": "", "delivery_point_suffix": "1G", "line_1": "2 Barons Court Road", "line_2": "", "line_3": "", "premise": "2", "country": "England", "county": "Greater London", "administrative_county": "", "postal_county": "", "traditional_county": "Greater London", "district": "Hammersmith and Fulham", "ward": "North End", "longitude": -0.208644362766368, "latitude": 51.4899488390558, "eastings": 524466, "northings": 178299, "uprn": "2" } ] }`))
+	}))
+	defer server.Close()
+
+	client := server.Client()
+	result := lookupUPRNForPostcodeViaAPI(server.URL, client)
+	if result == -1 {
+		t.Error("Expected a UPRN, got", result)
+	}
+}
+
+func TestLookupUPRNForPostcodeViaAPIWhereUnsuccessful(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte(`{ "result": [ ] }`))
+	}))
+	defer server.Close()
+
+	client := server.Client()
+	result := lookupUPRNForPostcodeViaAPI(server.URL, client)
+	if result != -1 {
+		t.Error("Expected a negative UPRN the indicate failed call to API, got", result)
+	}
+}
+
 //func TestGetMyHousePageFromStroudGovWhereSuccessful(t *testing.T) {
 //	client := &http.Client{}
 //	result := getMyHousePageFromStroudGov(123456789, client)

@@ -12,12 +12,15 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
 var (
-	tableName = os.Getenv("TABLE_NAME")
+	tableName            = os.Getenv("TABLE_NAME")
+	idealPostcodesURL    = os.Getenv("IDEAL_POSTCODES_URL")
+	idealPostcodesAPIKey = os.Getenv("IDEAL_POSTCODES_API_KEY")
 )
 
 //Address a struct to store the postalCode when unmarshalling a request to the Alexa address endpoint
@@ -60,7 +63,7 @@ func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN i
 	item := Item{}
 	err = dynamodbattribute.UnmarshalMap(result.Item, &item)
 	if err != nil {
-		fmt.Printf("Issue unmarshalling table data, %v", err)
+		fmt.Printf("Issue unmarshalling table data, %v\n", err)
 	}
 	UPRN = item.UPRN
 	return
@@ -76,7 +79,7 @@ func addPostcodeAndUPRNToDynamoDB(postcode string, UPRN int64, svc dynamodbiface
 
 	av, err := dynamodbattribute.MarshalMap(entry)
 	if err != nil {
-		fmt.Printf("Error Marshalling Item struct %s", err)
+		fmt.Printf("Error Marshalling Item struct %s\n", err)
 		return
 	}
 
@@ -87,7 +90,7 @@ func addPostcodeAndUPRNToDynamoDB(postcode string, UPRN int64, svc dynamodbiface
 
 	_, err = svc.PutItem(input)
 	if err != nil {
-		fmt.Printf("Error adding item to database: %s", err)
+		fmt.Printf("Error adding item to database: %s\n", err)
 		return
 	}
 	result = true
@@ -95,8 +98,47 @@ func addPostcodeAndUPRNToDynamoDB(postcode string, UPRN int64, svc dynamodbiface
 }
 
 // lookupUPRNForPostcodeViaAPI takes the postcode and calls external API to lookup UPRN. Returns UPRN if successful, -1 if not
-func lookupUPRNForPostcodeViaAPI(postcode string, client *http.Client) (URPN int64) {
-	return -1
+func lookupUPRNForPostcodeViaAPI(url string, client *http.Client) (UPRN int64) {
+	UPRN = -1
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("Error creating http request %v\n", err)
+		return
+	}
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	if err != nil {
+		fmt.Printf("Error making http request %v\n", err)
+		return
+	}
+
+	type IdealResult struct {
+		Result []struct {
+			UPRN string `json:"uprn"`
+		} `json:"result"`
+	}
+
+	var ir IdealResult
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("Error reading body %v\n", err)
+		return
+	}
+	err = json.Unmarshal(body, &ir)
+	if err != nil || len(ir.Result) == 0 {
+		fmt.Printf("Error unmarshalling JSON %v\n", err)
+		return
+	}
+	UPRN, err = strconv.ParseInt(ir.Result[0].UPRN, 10, 64)
+	if err != nil {
+		fmt.Printf("Error parsing UPRN %v\n", err)
+		return
+	}
+	if UPRN == 0 {
+		UPRN = -1
+	}
+	return
 }
 
 // getMyHousePageFromStroudGov takes the URPN and an http Client and makes an http request to stroud.gov.uk website. Returns the html page containing bin collection days
@@ -133,7 +175,8 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	UPRN := getUPRNFromDynamoDB(postcode, svc)
 	if UPRN == -1 {
 		// UPRN is not in dynamoDB so lookup with API
-		UPRN = lookupUPRNForPostcodeViaAPI(postcode, client)
+		url := fmt.Sprintf(idealPostcodesURL, postcode, idealPostcodesAPIKey)
+		UPRN = lookupUPRNForPostcodeViaAPI(url, client)
 		if UPRN == -1 {
 			fmt.Println("Could not get a URPN from the provided postcode")
 			return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, something went wrong getting your property details from the postcode I have recorded against your Amazon device."))

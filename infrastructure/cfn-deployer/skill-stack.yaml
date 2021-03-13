@@ -52,6 +52,8 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: "stroud-bin-day"
+          IDEAL_POSTCODES_URL: "https://api.ideal-postcodes.co.uk/v1/postcodes/%s?api_key=%s"
+          IDEAL_POSTCODES_API_KEY: "change-me"
   AlexaSkillFunctionEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
