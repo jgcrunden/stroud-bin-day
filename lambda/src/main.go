@@ -21,6 +21,7 @@ var (
 	tableName            = os.Getenv("TABLE_NAME")
 	idealPostcodesURL    = os.Getenv("IDEAL_POSTCODES_URL")
 	idealPostcodesAPIKey = os.Getenv("IDEAL_POSTCODES_API_KEY")
+	stroudGovMyHouseURL  = "https://www.stroud.gov.uk/my-house"
 )
 
 //Address a struct to store the postalCode when unmarshalling a request to the Alexa address endpoint
@@ -142,8 +143,34 @@ func lookupUPRNForPostcodeViaAPI(url string, client *http.Client) (UPRN int64) {
 }
 
 // getMyHousePageFromStroudGov takes the URPN and an http Client and makes an http request to stroud.gov.uk website. Returns the html page containing bin collection days
-func getMyHousePageFromStroudGov(UPRN int64, client *http.Client) (page string) {
-	return
+func getMyHousePageFromStroudGov(UPRN int64, client *http.Client, url string) (page string) {
+	page = ""
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		fmt.Printf("Issue creating request %v\n", err)
+		return
+	}
+
+	cookie := http.Cookie{
+		Name:  "myHouse",
+		Value: fmt.Sprintf("search=&uprn=%d&address=", UPRN),
+	}
+	req.AddCookie(&cookie)
+
+	resp, err := client.Do(req)
+	defer resp.Body.Close()
+	if err != nil {
+		fmt.Printf("Error making http request %v\n", err)
+		return
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("error reading body %s\n", err)
+		return
+	}
+
+	return string(body)
 }
 
 // parseMyHousePageForBinDays takes the html document and parses it for the bin collection days. Returns map containing bin types as keys and dates as values, or nil if it could not parse the data
@@ -188,7 +215,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 		}
 
 	}
-	page := getMyHousePageFromStroudGov(UPRN, client)
+	page := getMyHousePageFromStroudGov(UPRN, client, stroudGovMyHouseURL)
 	binDays := parseMyHousePageForBinDays(page)
 
 	// formulate map of binDays into an Alexa response
