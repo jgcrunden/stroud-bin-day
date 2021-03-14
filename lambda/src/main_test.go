@@ -128,22 +128,82 @@ func TestLookupUPRNForPostcodeViaAPIWhereUnsuccessful(t *testing.T) {
 	}
 }
 
-//func TestGetMyHousePageFromStroudGovWhereSuccessful(t *testing.T) {
-//	client := &http.Client{}
-//	result := getMyHousePageFromStroudGov(123456789, client)
-//	if result == "" {
-//		t.Error("Expected HTML document returned, got an empty string")
-//	}
-//}
-//
-//func TestGetMyHousePageFromStroudGovWhereUnsuccessful(t *testing.T) {
-//	client := &http.Client{}
-//	result := getMyHousePageFromStroudGov(123456789, client)
-//	if result != "" {
-//		t.Error("Expected HTML document returned, got an empty string")
-//	}
-//}
-//
+var htmlFromStroudGov string = `<html lang="en">
+        <head>
+        </head>
+        <body>
+                <div class="panel panel-rubbish">
+                        <div class="panel-heading">
+                                <h3 class="panel-title">
+                                        <span class="fa fa-fw fa-trash-o" style="color: #fff;"></span>Bins, rubbish & recycling
+                                </h3>
+                        </div>
+                        <ul class="list-group" style="padding-left: 0; padding-bottom: 0;">
+                                <li class="list-group-item">
+                                        <img src="//www.stroud.gov.uk/media/1274/wheelie-bin.png" class="imglandingicon" alt="wheelie-binpng" />
+                                        Next rubbish collection date
+                                        <p><strong>Tuesday 16 March 2021</strong></p>
+                                </li>
+                                <li class="list-group-item">
+                                        <img src="//www.stroud.gov.uk/media/1266/skip.png" class="imglandingicon" alt="recycling" />
+                                        Next recycling collection date
+                                        <p><strong>Tuesday 23 March 2021</strong></p>
+                                </li>
+                                <li class="list-group-item">
+                                        <img src="//www.stroud.gov.uk/media/1182/eating.png" class="imglandingicon" alt="food" />
+                                        Food waste collection
+                                        <p><strong>Every Tuesday</strong></p>
+                                </li>
+                                <li class="list-group-item">
+                                        <img src="//www.stroud.gov.uk/media/1150/fallen-tree.png" class="imglandingicon" alt="fallen-treepng" />
+                                        Garden waste collection
+                                        <p> <strong>Tuesday 16 March 2021</strong><br />
+                                                Find out more about the <a href="/environment/bins-rubbish-and-recycling/garden-waste-collection-service">
+                                                        garden waste collection service
+                                                </a>
+                                        </p>
+                                </li>
+                                <li class="list-group-item">
+                                        <img src="//www.stroud.gov.uk/media/1149/events.png" class="imglandingicon" alt="calendar" />
+                                                Download your collection days calendar
+                                        <p><a href="https://www.stroud.gov.uk/info/cals2021/Wk2_E2__2021_Tuesday.pdf" target="_blank">Colour calendar</a><br />
+                                                <a href="https://www.stroud.gov.uk/info/cals2021/Wk2_E2__2021_Tuesday_BW.pdf" target="_blank">Accessible/printable calendar</a></p>
+                                </li>
+                                <li class="list-group-item">
+                                        <p>
+                                                Please ensure that your rubbish & recycling is out by 6am on your collection day.<br />
+                                        <a href="/environment/bins-rubbish-and-recycling">More about bins, rubbish & recycling</a>
+                                        </p>
+                                </li>
+                        </ul>
+                </div>
+        </body>
+</html>`
+
+func TestGetMyHousePageFromStroudGovWhereSuccessful(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte(htmlFromStroudGov))
+	}))
+	defer server.Close()
+	client := server.Client()
+	result := getMyHousePageFromStroudGov(123456789, client, server.URL)
+	if result == "" {
+		t.Error("Expected HTML document returned, got an empty string")
+	}
+}
+
+func TestGetMyHousePageFromStroudGovWhereUnsuccessful(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		rw.Write([]byte(""))
+	}))
+	defer server.Close()
+	client := server.Client()
+	result := getMyHousePageFromStroudGov(123456789, client, server.URL)
+	if result != "" {
+		t.Error("Expected HTML document returned, got an empty string")
+	}
+}
+
 //func TestParseMyHousePageForBinDaysWhereSuccessful(t *testing.T) {
 //	result := parseMyHousePageForBinDays("PLACEHOLDER FOR HTML document")
 //	if result == nil {
