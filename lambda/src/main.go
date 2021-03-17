@@ -223,7 +223,7 @@ func parseMyHousePageForBinDays(page string) (map[string]string) {
 		}
 	}
 	f(doc)
-	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" | binDates["garden waste" == "" {
+	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" || binDates["garden waste"] == "" {
 		return nil
 	}
 	return binDates
