@@ -204,16 +204,16 @@ func TestGetMyHousePageFromStroudGovWhereUnsuccessful(t *testing.T) {
 	}
 }
 
-//func TestParseMyHousePageForBinDaysWhereSuccessful(t *testing.T) {
-//	result := parseMyHousePageForBinDays("PLACEHOLDER FOR HTML document")
-//	if result == nil {
-//		t.Error("Expected a map containing bin types mapped to dates, got", result)
-//	}
-//}
-//
-//func TestParseMyHousePageForBinDaysWhereUnsuccessful(t *testing.T) {
-//	result := parseMyHousePageForBinDays("PLACEHOLDER FOR HTML document")
-//	if result != nil {
-//		t.Error("Expected an empty map to indicate unable to parse HTML document", result)
-//	}
-//}
+func TestParseMyHousePageForBinDaysWhereSuccessful(t *testing.T) {
+	result := parseMyHousePageForBinDays(htmlFromStroudGov)
+	if result == nil {
+		t.Error("Expected a map containing bin types mapped to dates, got", result)
+	}
+}
+
+func TestParseMyHousePageForBinDaysWhereUnsuccessful(t *testing.T) {
+	result := parseMyHousePageForBinDays("")
+	if result != nil {
+		t.Error("Expected an empty map to indicate unable to parse HTML document", result)
+	}
+}
