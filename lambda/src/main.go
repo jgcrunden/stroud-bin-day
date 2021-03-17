@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -9,12 +10,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
+	"golang.org/x/net/html"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
-	"time"
 )
 
 var (
@@ -173,9 +175,58 @@ func getMyHousePageFromStroudGov(UPRN int64, client *http.Client, url string) (p
 	return string(body)
 }
 
+func getDate(n *html.Node, gardenWaste bool) string {
+	var m *html.Node
+	if gardenWaste {
+		m = n.NextSibling.NextSibling.FirstChild.NextSibling.FirstChild
+	} else {
+		m = n.NextSibling.NextSibling.FirstChild.FirstChild
+	}
+	var buf bytes.Buffer
+	w := io.Writer(&buf)
+	html.Render(w, m)
+	return buf.String()
+}
+
 // parseMyHousePageForBinDays takes the html document and parses it for the bin collection days. Returns map containing bin types as keys and dates as values, or nil if it could not parse the data
-func parseMyHousePageForBinDays(page string) (binDays map[string]time.Time) {
-	return
+func parseMyHousePageForBinDays(page string) (map[string]string) {
+	var binDates = make(map[string]string)
+	doc, err := html.Parse(strings.NewReader(page))
+	if err != nil {
+		fmt.Printf("Error parsing html document %v\n", err)
+		return nil
+	}
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "img" {
+			for _, a := range n.Attr {
+				if a.Key == "alt" {
+					switch a.Val {
+					case "wheelie-binpng":
+						binDates["wheelie bin"] = getDate(n, false)
+						break
+					case "recycling":
+						binDates["recycling"] = getDate(n, false)
+						break
+					case "food":
+						binDates["food"] = getDate(n, false)
+						break
+					case "fallen-treepng":
+						binDates["garden waste"] = getDate(n, true)
+						break
+					}
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(doc)
+	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" | binDates["garden waste" == "" {
+		return nil
+	}
+	return binDates
 }
 
 //HandleGetBinDayInfoIntent function responsible for the GetBinDayInfoIntent. Takes the request struct, calls relevant functions for calculating the bin day and returns the vale in the Response struct
@@ -217,7 +268,9 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	}
 	page := getMyHousePageFromStroudGov(UPRN, client, stroudGovMyHouseURL)
 	binDays := parseMyHousePageForBinDays(page)
-
+    if binDays == nil {
+		return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, I was not able to get your bin collection data from Stroud District Council's website. Please file a bug to the developer."))
+	}
 	// formulate map of binDays into an Alexa response
 	fmt.Println(binDays)
 	return
