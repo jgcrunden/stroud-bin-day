@@ -15,8 +15,10 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var (
@@ -189,7 +191,7 @@ func getDate(n *html.Node, gardenWaste bool) string {
 }
 
 // parseMyHousePageForBinDays takes the html document and parses it for the bin collection days. Returns map containing bin types as keys and dates as values, or nil if it could not parse the data
-func parseMyHousePageForBinDays(page string) (map[string]string) {
+func parseMyHousePageForBinDays(page string) map[string]string {
 	var binDates = make(map[string]string)
 	doc, err := html.Parse(strings.NewReader(page))
 	if err != nil {
@@ -227,6 +229,57 @@ func parseMyHousePageForBinDays(page string) (map[string]string) {
 		return nil
 	}
 	return binDates
+}
+
+func formulateResponse(binDates map[string]string) (response string) {
+	response = ""
+	var m = make(map[time.Time][]string)
+	var buffer bytes.Buffer
+	layout := "Monday 2 January 2006"
+	for k, v := range binDates {
+		date, err := time.Parse(layout, v)
+		if err == nil {
+			m[date] = append(m[date], k)
+		} else {
+			buffer.WriteString(fmt.Sprintf("Your %v will be collected %v. ", k, v))
+		}
+	}
+
+	dates := make([]time.Time, 0, len(m))
+
+	for k := range m {
+		dates = append(dates, k)
+	}
+	sort.Slice(dates, func(i, j int) bool {
+		return dates[i].Before(dates[j])
+	})
+
+	now := time.Now()
+	loc, _ := time.LoadLocation("Europe/London")
+	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
+	var responseBuf bytes.Buffer
+	for _, v := range dates {
+		var buf bytes.Buffer
+		for i := 0; i < len(m[v]); i++ {
+			buf.WriteString(m[v][i])
+			if i+1 < len(m[v]) {
+				buf.WriteString(" and ")
+			}
+		}
+		collectionDate := fmt.Sprintf("on %v", v.Format("Monday 2 January 2006"))
+		if v.Equal(today) {
+			collectionDate = "today"
+		} else if v.Before(today.AddDate(0, 0, 1)) {
+			collectionDate = "tomorrow"
+		} else if v.Before(today.AddDate(0, 0, 7)) {
+			collectionDate = fmt.Sprintf("this %v", v.Format("Monday"))
+		}
+		responseBuf.WriteString(fmt.Sprintf("Your %v will be collected %v. ", buf.String(), collectionDate))
+	}
+
+	responseBuf.WriteString(buffer.String())
+	response = responseBuf.String()
+	return
 }
 
 //HandleGetBinDayInfoIntent function responsible for the GetBinDayInfoIntent. Takes the request struct, calls relevant functions for calculating the bin day and returns the vale in the Response struct
@@ -268,7 +321,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	}
 	page := getMyHousePageFromStroudGov(UPRN, client, stroudGovMyHouseURL)
 	binDays := parseMyHousePageForBinDays(page)
-    if binDays == nil {
+	if binDays == nil {
 		return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, I was not able to get your bin collection data from Stroud District Council's website. Please file a bug to the developer."))
 	}
 	// formulate map of binDays into an Alexa response
