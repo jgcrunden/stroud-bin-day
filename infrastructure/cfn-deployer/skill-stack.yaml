@@ -88,8 +88,6 @@ Resources:
       KeySchema: 
       - AttributeName: "Postcode"
         KeyType: "HASH"
-      - AttributeName: "UPRN"
-        KeyType: "RANGE"
       BillingMode: PROVISIONED
       ProvisionedThroughput: 
         ReadCapacityUnits: 2
