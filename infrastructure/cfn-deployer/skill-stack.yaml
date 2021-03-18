@@ -36,6 +36,14 @@ Resources:
                     - dynamoDB:Query
                     - dynamoDB:PutItem
                   Resource: !GetAtt DynamoDBTable.Arn
+          - PolicyName: alexaSkillExecutionPolicy                                                 
+            PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Effect: Allow
+                Action:
+                  - logs:*
+                Resource: arn:aws:logs:*:*:*
   AlexaSkillFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -62,6 +70,11 @@ Resources:
       FunctionName: !GetAtt AlexaSkillFunction.Arn
       Principal: alexa-appkit.amazon.com
       EventSourceToken: !Ref SkillId
+  AlexaSkillFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AlexaSkillFunction}
+      RetentionInDays: 14
   DynamoDBTable:
     Type: AWS::DynamoDB::Table
     Properties:
