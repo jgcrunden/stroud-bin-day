@@ -41,9 +41,9 @@ Resources:
               Version: 2012-10-17
               Statement:
                 - Effect: Allow
-                Action:
-                  - logs:*
-                Resource: arn:aws:logs:*:*:*
+                  Action:
+                    - logs:*
+                  Resource: arn:aws:logs:*:*:*
   AlexaSkillFunction:
     Type: AWS::Lambda::Function
     Properties:
