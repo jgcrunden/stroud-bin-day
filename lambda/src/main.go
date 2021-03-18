@@ -62,8 +62,12 @@ func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN i
 			},
 		},
 	})
-
+	if err != nil {
+		fmt.Printf("Error reading from table %v\n", err)
+		return
+	}
 	if result.Item == nil {
+		fmt.Printf("Unable to find UPRN for postcode %v\n", postcode)
 		return
 	}
 	item := Item{}
@@ -211,7 +215,7 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 						binDates["recycling"] = getDate(n, false)
 						break
 					case "food":
-						binDates["food"] = getDate(n, false)
+						binDates["food waste"] = getDate(n, false)
 						break
 					}
 				}
@@ -222,7 +226,7 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 		}
 	}
 	f(doc)
-	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" {
+	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food waste"] == "" {
 		return nil
 	}
 	return binDates
@@ -288,7 +292,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	apiEndpoint := request.Context.System.APIEndpoint
 	client := &http.Client{}
 	postcode, err := getUserPostcode(deviceID, accessToken, apiEndpoint, client)
-	if err != nil {
+	if err != nil || postcode == "" {
 		return AskForPermissionResponse("To retrieve your bin collection day I require your postcode.", []string{"read::alexa:device:all:address:country_and_postal_code"})
 	}
 
@@ -355,7 +359,6 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 }
 func handler(request Request) (Response, error) {
 	var response Response
-
 	switch request.Body.Intent.Name {
 	case "GetBinDayInfoIntent":
 		response = HandleGetBinDayInfoIntent(request)

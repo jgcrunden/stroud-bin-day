@@ -35,6 +35,7 @@ Resources:
                   Action:
                     - dynamoDB:Query
                     - dynamoDB:PutItem
+                    - dynamoDB:GetItem
                   Resource: !GetAtt DynamoDBTable.Arn
           - PolicyName: alexaSkillExecutionPolicy                                                 
             PolicyDocument:
@@ -82,13 +83,9 @@ Resources:
       AttributeDefinitions: 
         - AttributeName: "Postcode"
           AttributeType: "S"
-        - AttributeName: "UPRN"
-          AttributeType: "N"
       KeySchema: 
       - AttributeName: "Postcode"
         KeyType: "HASH"
-      - AttributeName: "UPRN"
-        KeyType: "RANGE"
       BillingMode: PROVISIONED
       ProvisionedThroughput: 
         ReadCapacityUnits: 2
