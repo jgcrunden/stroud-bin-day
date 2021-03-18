@@ -174,7 +174,6 @@ func getMyHousePageFromStroudGov(UPRN int64, client *http.Client, url string) (p
 		fmt.Printf("error reading body %s\n", err)
 		return
 	}
-
 	return string(body)
 }
 
@@ -214,9 +213,6 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 					case "food":
 						binDates["food"] = getDate(n, false)
 						break
-					case "fallen-treepng":
-						binDates["garden waste"] = getDate(n, true)
-						break
 					}
 				}
 			}
@@ -226,7 +222,7 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 		}
 	}
 	f(doc)
-	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" || binDates["garden waste"] == "" {
+	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" {
 		return nil
 	}
 	return binDates
@@ -267,7 +263,7 @@ func formulateResponse(binDates map[string]string) (response string) {
 				buf.WriteString(" and ")
 			}
 		}
-		collectionDate := fmt.Sprintf("on %v", v.Format("Monday 2 January 2006"))
+		collectionDate := fmt.Sprintf("on %v", v.Format("Monday 2 January"))
 		if v.Equal(today) {
 			collectionDate = "today"
 		} else if v.Before(today.AddDate(0, 0, 1)) {
@@ -295,7 +291,6 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	if err != nil {
 		return AskForPermissionResponse("To retrieve your bin collection day I require your postcode.", []string{"read::alexa:device:all:address:country_and_postal_code"})
 	}
-	fmt.Println(postcode)
 
 	isInSDC := checkIfPostcodeIsInSDC(postcode, postcodes)
 	if !isInSDC {
@@ -326,8 +321,9 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 		return NewSimpleResponse("Cannot fulfill", fmt.Sprintln("I'm sorry, I was not able to get your bin collection data from Stroud District Council's website. Please file a bug to the developer."))
 	}
 	// formulate map of binDays into an Alexa response
-	fmt.Println(binDays)
-	return
+	response := formulateResponse(binDays)
+
+	return NewSimpleResponse("Bin Days", response)
 }
 
 func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, client *http.Client) (result string, err error) {
