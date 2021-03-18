@@ -62,8 +62,12 @@ func getUPRNFromDynamoDB(postcode string, svc dynamodbiface.DynamoDBAPI) (UPRN i
 			},
 		},
 	})
-
+	if err != nil {
+		fmt.Println("Error reading from table %v", err)
+		return
+	}
 	if result.Item == nil {
+		fmt.Printf("Unable to find UPRN for postcode %v\n", postcode)
 		return
 	}
 	item := Item{}
