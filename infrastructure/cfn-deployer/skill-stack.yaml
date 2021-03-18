@@ -83,8 +83,6 @@ Resources:
       AttributeDefinitions: 
         - AttributeName: "Postcode"
           AttributeType: "S"
-        - AttributeName: "UPRN"
-          AttributeType: "N"
       KeySchema: 
       - AttributeName: "Postcode"
         KeyType: "HASH"

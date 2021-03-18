@@ -215,7 +215,7 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 						binDates["recycling"] = getDate(n, false)
 						break
 					case "food":
-						binDates["food"] = getDate(n, false)
+						binDates["food waste"] = getDate(n, false)
 						break
 					}
 				}
@@ -226,7 +226,7 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 		}
 	}
 	f(doc)
-	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food"] == "" {
+	if binDates["wheelie bin"] == "" || binDates["recycling"] == "" || binDates["food waste"] == "" {
 		return nil
 	}
 	return binDates
@@ -359,7 +359,6 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 }
 func handler(request Request) (Response, error) {
 	var response Response
-
 	switch request.Body.Intent.Name {
 	case "GetBinDayInfoIntent":
 		response = HandleGetBinDayInfoIntent(request)
