@@ -12,7 +12,6 @@
           "examplePhrases": [
             "Alexa, ask Stroud bins, when is bin day",
             "Alexa, ask Stroud bins, what bins need to go out",
-			"Alexa, ask Stroud bins, what bins need to go out this week",
             "help"
           ],
           "name": "Bin Day: Stroud District Council",
