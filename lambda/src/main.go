@@ -363,6 +363,12 @@ func handler(request Request) (Response, error) {
 	case "GetBinDayInfoIntent":
 		response = HandleGetBinDayInfoIntent(request)
 		break
+	case "AMAZON.CancelIntent":
+		response = NewSimpleResponse("Cancel", "Okay, cancelled")
+		break
+	case "AMAZON.StopIntent":
+		response = NewSimpleResponse("Stop", "Okay, stopped")
+		break
 	case "AMAZON.HelpIntent":
 		response = NewSimpleResponse("Help Response", "You can say, 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area")
 		break

@@ -43,11 +43,6 @@
     ],
     "apis": {
       "custom": {
-        "interfaces": [
-          {
-            "type": "CAN_FULFILL_INTENT_REQUEST"
-          }
-        ],
         "endpoint": {
           "uri": "LAMBDA_ARN"
         }

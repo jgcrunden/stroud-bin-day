@@ -38,9 +38,6 @@ func AskForPermissionResponse(text string, permissions []string) Response {
 		},
 	}
 	return r
-	return r
-	return r
-	return r
 }
 
 // Response Types
