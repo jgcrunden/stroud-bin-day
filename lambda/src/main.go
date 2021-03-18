@@ -292,7 +292,7 @@ func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	apiEndpoint := request.Context.System.APIEndpoint
 	client := &http.Client{}
 	postcode, err := getUserPostcode(deviceID, accessToken, apiEndpoint, client)
-	if err != nil {
+	if err != nil || postcode == "" {
 		return AskForPermissionResponse("To retrieve your bin collection day I require your postcode.", []string{"read::alexa:device:all:address:country_and_postal_code"})
 	}
 
