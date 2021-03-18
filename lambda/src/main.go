@@ -26,6 +26,7 @@ var (
 	idealPostcodesURL    = os.Getenv("IDEAL_POSTCODES_URL")
 	idealPostcodesAPIKey = os.Getenv("IDEAL_POSTCODES_API_KEY")
 	stroudGovMyHouseURL  = "https://www.stroud.gov.uk/my-house"
+	sdcPostcodes         = os.Getenv("SDC_POSTCODES")
 )
 
 //Address a struct to store the postalCode when unmarshalling a request to the Alexa address endpoint
@@ -285,7 +286,7 @@ func formulateResponse(binDates map[string]string) (response string) {
 //HandleGetBinDayInfoIntent function responsible for the GetBinDayInfoIntent. Takes the request struct, calls relevant functions for calculating the bin day and returns the vale in the Response struct
 func HandleGetBinDayInfoIntent(request Request) (resp Response) {
 	// Confirm user is in Stroud District Council
-	postcodes := strings.Split(os.Getenv("SDC_POSTCODES"), " ")
+	postcodes := strings.Split(sdcPostcodes, " ")
 	deviceID := request.Context.System.Device.DeviceID
 	accessToken := request.Context.System.APIAccessToken
 	apiEndpoint := request.Context.System.APIEndpoint

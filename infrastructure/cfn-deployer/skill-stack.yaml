@@ -54,6 +54,7 @@ Resources:
           TABLE_NAME: "stroud-bin-day"
           IDEAL_POSTCODES_URL: "https://api.ideal-postcodes.co.uk/v1/postcodes/%s?api_key=%s"
           IDEAL_POSTCODES_API_KEY: "change-me"
+          SDC_POSTCODES: "GL10 GL11 GL12 GL13 GL2 GL3 GL4 GL5 GL53 GL6 GL7 GL8 GL9"
   AlexaSkillFunctionEventPermission:
     Type: AWS::Lambda::Permission
     Properties:
