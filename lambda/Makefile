@@ -2,7 +2,6 @@
 SRC=src/main.go src/request.go src/response.go
 BIN=bin/lambda
 ZIP=function.zip
-ARN=${LAMBDA_ARN}
 
 deps:
 	go get -u ./...
@@ -21,3 +20,4 @@ test: deps
 
 clean:
 	rm -f $(BIN) $(ZIP)
+
