@@ -35,7 +35,7 @@ Resources:
                   Action:
                     - dynamoDB:Query
                     - dynamoDB:PutItem
-					- dynamoDB.GetItem
+                    - dynamoDB.GetItem
                   Resource: !GetAtt DynamoDBTable.Arn
           - PolicyName: alexaSkillExecutionPolicy                                                 
             PolicyDocument:
