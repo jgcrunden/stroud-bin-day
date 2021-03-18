@@ -1,0 +1,36 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ develop ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build lambda
+        run: |
+          (cd lambda && make build)
+      - name: Substitute secrets into CloudFormation json
+        run: |
+          chmod 770 lambda/bin/lambda
+          sed -i "s/LAMBDA_ARN/${{ secrets.LAMBDA_ARN}}/" skill-package/skill.json
+          sed -i -e "s/SKILL_ID/${{ secrets.SKILL_ID }}/" -e "s/BUCKET_NAME/${{ secrets.BUCKET_NAME }}/" -e "s|STACK_ID|${{ secrets.STACK_ID }}|" .ask/ask-states.json
+          sudo chown 1000:1000 -R .
+          ls -al
+          ls -al lambda/bin
+      - name: Alexa ASK AWS CLI Deploy
+        uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
+        id: ask
+        with:
+          command: "ask deploy"
+        env:
+          ASK_ACCESS_TOKEN: ${{ secrets.ASK_ACCESS_TOKEN }}
+          ASK_REFRESH_TOKEN: ${{ secrets.ASK_REFRESH_TOKEN }}
+          ASK_VENDOR_ID: ${{ secrets.ASK_VENDOR_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SKILL_ID: ${{ secrets.SKILL_ID }}

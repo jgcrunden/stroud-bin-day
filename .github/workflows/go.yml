@@ -1,8 +1,6 @@
-name: Go
+name: Go Unit Tests
 
 on:
-  push:
-    branches: [ '*' ]
   pull_request:
     branches: [ develop ]
 

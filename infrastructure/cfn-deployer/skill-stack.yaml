@@ -1,0 +1,99 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  SkillId:
+    Type: String
+  LambdaRuntime:
+    Type: String
+  LambdaHandler:
+    Type: String
+  CodeBucket:
+    Type: String
+  CodeKey:
+    Type: String
+  CodeVersion:
+    Type: String
+Resources:
+  AlexaSkillIAMRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Path: /
+        Policies:
+          - PolicyName: alexaSkillDynamoDBPolicy
+            PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - dynamoDB:Query
+                    - dynamoDB:PutItem
+                  Resource: !GetAtt DynamoDBTable.Arn
+          - PolicyName: alexaSkillExecutionPolicy                                                 
+            PolicyDocument:
+              Version: 2012-10-17
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - logs:*
+                  Resource: arn:aws:logs:*:*:*
+  AlexaSkillFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: "stroud-bin-day"
+      Code:
+        S3Bucket: !Ref CodeBucket
+        S3Key: !Ref CodeKey
+        S3ObjectVersion: !Ref CodeVersion
+      Handler: !Ref LambdaHandler
+      Runtime: !Ref LambdaRuntime
+      Role: !GetAtt AlexaSkillIAMRole.Arn
+      MemorySize: 512
+      Timeout: 15
+      Environment:
+        Variables:
+          TABLE_NAME: "stroud-bin-day"
+          IDEAL_POSTCODES_URL: "https://api.ideal-postcodes.co.uk/v1/postcodes/%s?api_key=%s"
+          IDEAL_POSTCODES_API_KEY: "change-me"
+          SDC_POSTCODES: "GL10 GL11 GL12 GL13 GL2 GL3 GL4 GL5 GL53 GL6 GL7 GL8 GL9"
+  AlexaSkillFunctionEventPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:invokeFunction
+      FunctionName: !GetAtt AlexaSkillFunction.Arn
+      Principal: alexa-appkit.amazon.com
+      EventSourceToken: !Ref SkillId
+  AlexaSkillFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${AlexaSkillFunction}
+      RetentionInDays: 14
+  DynamoDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "stroud-bin-day"
+      AttributeDefinitions: 
+        - AttributeName: "Postcode"
+          AttributeType: "S"
+        - AttributeName: "UPRN"
+          AttributeType: "N"
+      KeySchema: 
+      - AttributeName: "Postcode"
+        KeyType: "HASH"
+      - AttributeName: "UPRN"
+        KeyType: "RANGE"
+      BillingMode: PROVISIONED
+      ProvisionedThroughput: 
+        ReadCapacityUnits: 2
+        WriteCapacityUnits: 2
+Outputs:
+  SkillEndpoint:
+    Description: LambdaARN for the regional endpoint
+    Value: !GetAtt AlexaSkillFunction.Arn
