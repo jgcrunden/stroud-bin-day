@@ -4,28 +4,19 @@
             "invocationName": "stroud bins",
             "intents": [
                 {
-                    "name": "AMAZON.CancelIntent",
-                    "samples": []
-                },
-                {
                     "name": "AMAZON.HelpIntent",
-                    "samples": []
-                },
-                {
-                    "name": "AMAZON.StopIntent",
-                    "samples": []
+                    "samples": [
+                    	"help"
+					]
                 },
                 {
                     "name": "GetBinDayInfoIntent",
                     "slots": [],
                     "samples": [
                         "when is bin day",
-                        "what bins need to go out"
+                        "what bins need to go out",
+						"what bins need to go out this week"
                     ]
-                },
-                {
-                    "name": "AMAZON.NavigateHomeIntent",
-                    "samples": []
                 }
             ],
             "types": []

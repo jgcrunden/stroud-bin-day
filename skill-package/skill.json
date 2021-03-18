@@ -10,8 +10,9 @@
             "stroud district council"
           ],
           "examplePhrases": [
-            "When is bin day",
-            "What bins need to go out",
+            "Alexa, ask Stroud bins, when is bin day",
+            "Alexa, ask Stroud bins, what bins need to go out",
+			"Alexa, ask Stroud bins, what bins need to go out this week",
             "help"
           ],
           "name": "Bin Day: Stroud District Council",
@@ -31,8 +32,8 @@
       "containsAds": false,
       "locales": {
         "en-GB": {
-          "privacyPolicyUrl": "https://joshuacrunden.com",
-          "termsOfUseUrl": "https://joshuacrunden.com"
+          "privacyPolicyUrl": "https://github.com/jgcrunden/stroud-bin-day/blob/master/PRIVACY-POLICY.md",
+          "termsOfUseUrl": "https://github.com/jgcrunden/stroud-bin-day/blob/master/TERMS-OF-USE.md"
         }
       }
     },

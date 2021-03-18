@@ -363,6 +363,9 @@ func handler(request Request) (Response, error) {
 	case "GetBinDayInfoIntent":
 		response = HandleGetBinDayInfoIntent(request)
 		break
+	case "AMAZON.HelpIntent":
+		response = NewSimpleResponse("Help Response", "You can say, 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area")
+		break
 	default:
 		fmt.Println("Other request placeholder")
 		break
