@@ -25,3 +25,8 @@ export ARN=<YOUR_LAMBDAS_ARN>
 make deploy
 ```
 Ensure that you are logged into your AWS account via the CLI before running this command.
+
+
+### Credits
+Bin icons from ![FlatIcon](https://www.flaticon.com/authors/flat-icons)
+
