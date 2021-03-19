@@ -359,6 +359,10 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 }
 func handler(request Request) (Response, error) {
 	var response Response
+	if request.Body.Intent.Type == "LaunchRequest" {
+		response = NewOpenResponse("Welcome to the Bin Day: Stroud District Council alexa skill. You can say 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area. What do you want to say?")
+	}
+
 	switch request.Body.Intent.Name {
 	case "GetBinDayInfoIntent":
 		response = HandleGetBinDayInfoIntent(request)
@@ -370,10 +374,10 @@ func handler(request Request) (Response, error) {
 		response = NewSimpleResponse("Stop", "Okay, stopped")
 		break
 	case "AMAZON.HelpIntent":
-		response = NewSimpleResponse("Help Response", "You can say, 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area")
+		response = NewOpenResponse("Help Response", "You can say, 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area. What do you want to say?")
 		break
 	default:
-		fmt.Println("Other request placeholder")
+		response = NewOpenResponse("Do not understand", "I'm sorry, I don't understand. You can say, 'ask Stroud Bins what bins need to go out' to find out your bin timetable. What do you want to say?")
 		break
 	}
 

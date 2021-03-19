@@ -18,8 +18,9 @@
           "description": "Informs residents of Stroud District Council when the next bin day is and what waste collection type it is."
         }
       },
+	  "distributionCountries": [ "GB" ],
       "isAvailableWorldwide": false,
-      "testingInstructions": "Sample Testing Instructions.",
+      "testingInstructions": "The alexa device requires a postcode for the skill to return the desired information. This postcode needs to be from the Stroud District Council area, for example, GL5 1AE. The alexa device needs to give the skill read access to address:country_and_postal_code",
       "category": "KNOWLEDGE_AND_TRIVIA",
       "distributionMode": "PUBLIC"
     },
@@ -27,7 +28,7 @@
       "allowsPurchases": false,
       "usesPersonalInfo": true,
       "isChildDirected": false,
-      "isExportCompliant": false,
+      "isExportCompliant": true,
       "containsAds": false,
       "locales": {
         "en-GB": {
