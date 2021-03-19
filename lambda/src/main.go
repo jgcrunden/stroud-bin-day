@@ -361,6 +361,7 @@ func handler(request Request) (Response, error) {
 	var response Response
 	if request.Body.Type == "LaunchRequest" {
 		response = NewOpenResponse("Welcome Message", "Welcome to the Bin Day: Stroud District Council alexa skill. You can say 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area. What do you want to say?")
+		return response, nil
 	}
 
 	switch request.Body.Intent.Name {
