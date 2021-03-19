@@ -359,8 +359,8 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 }
 func handler(request Request) (Response, error) {
 	var response Response
-	if request.Body.Intent.Type == "LaunchRequest" {
-		response = NewOpenResponse("Welcome to the Bin Day: Stroud District Council alexa skill. You can say 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area. What do you want to say?")
+	if request.Body.Type == "LaunchRequest" {
+		response = NewOpenResponse("Welcome Message", "Welcome to the Bin Day: Stroud District Council alexa skill. You can say 'ask Stroud Bins what bins need to go out' to find out what the bin timetable is for your area. What do you want to say?")
 	}
 
 	switch request.Body.Intent.Name {
