@@ -22,6 +22,26 @@ func NewSimpleResponse(title string, text string) Response {
 	return r
 }
 
+//NewOpenResponse builds a session response
+func NewOpenResponse(title string, text string) Response {
+	r := Response{
+		Version: "1.0",
+		Body: ResBody{
+			OutputSpeech: &Payload{
+				Type: "PlainText",
+				Text: text,
+			},
+			Card: &Payload{
+				Type:    "Simple",
+				Title:   title,
+				Content: text,
+			},
+			ShouldEndSession: false,
+		},
+	}
+	return r
+}
+
 // AskForPermissionResponse builds as response to ask the user for permission to some specific information
 func AskForPermissionResponse(text string, permissions []string) Response {
 	r := Response{
