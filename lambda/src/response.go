@@ -55,6 +55,7 @@ func AskForPermissionResponse(text string, permissions []string) Response {
 				Type:        "AskForPermissionsConsent",
 				Permissions: permissions,
 			},
+			ShouldEndSession: true,
 		},
 	}
 	return r
