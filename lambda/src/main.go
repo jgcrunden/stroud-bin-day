@@ -140,7 +140,11 @@ func lookupUPRNForPostcodeViaAPI(url string, client *http.Client) (UPRN int64) {
 		fmt.Printf("Error unmarshalling JSON %v\n", err)
 		return
 	}
-	UPRN, err = strconv.ParseInt(ir.Result[0].UPRN, 10, 64)
+	uprnStr := ""
+	for i := 0; i < len(ir.Result) && uprnStr == ""; i++ {
+		uprnStr = ir.Result[i].UPRN
+	}
+	UPRN, err = strconv.ParseInt(uprnStr, 10, 64)
 	if err != nil {
 		fmt.Printf("Error parsing UPRN %v\n", err)
 		return
