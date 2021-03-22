@@ -274,7 +274,7 @@ func formulateResponse(binDates map[string]string) (response string) {
 		collectionDate := fmt.Sprintf("on %v", v.Format("Monday 2 January"))
 		if v.Equal(today) {
 			collectionDate = "today"
-		} else if v.Before(today.AddDate(0, 0, 1)) {
+		} else if v.Equal(today.AddDate(0, 0, 1)) {
 			collectionDate = "tomorrow"
 		} else if v.Before(today.AddDate(0, 0, 7)) {
 			collectionDate = fmt.Sprintf("this %v", v.Format("Monday"))
