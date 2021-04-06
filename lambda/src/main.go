@@ -238,11 +238,12 @@ func parseMyHousePageForBinDays(page string) map[string]string {
 
 func formulateResponse(binDates map[string]string) (response string) {
 	response = ""
+	loc, _ := time.LoadLocation("Europe/London")
 	var m = make(map[time.Time][]string)
 	var buffer bytes.Buffer
 	layout := "Monday 2 January 2006"
 	for k, v := range binDates {
-		date, err := time.Parse(layout, v)
+		date, err := time.ParseInLocation(layout, v, loc)
 		if err == nil {
 			m[date] = append(m[date], k)
 		} else {
@@ -260,7 +261,6 @@ func formulateResponse(binDates map[string]string) (response string) {
 	})
 
 	now := time.Now()
-	loc, _ := time.LoadLocation("Europe/London")
 	today := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, loc)
 	var responseBuf bytes.Buffer
 	for _, v := range dates {
