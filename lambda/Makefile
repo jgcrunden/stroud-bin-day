@@ -1,19 +1,19 @@
-.PHONY=build deploy test clean deps
+BINDIR:=./bin
+BINARY:=bootstrap
+ZIPFILE:=$(BINARY).zip
 SRC=src/main.go src/request.go src/response.go
-BIN=bin/lambda
-ZIP=function.zip
+REPORT:=./report
+
+build: deps
+	mkdir -p $(BINDIR)
+	GOARCH=amd64 GOOS=linux go build -tags lambda.norpc -o $(BINDIR)/$(BINARY) $(SRC)
 
 deps:
 	go get -u ./...
 
-build: deps
-	go fmt ./...
-	#golint ./...
-	GOOS=linux GOARCH=amd64 go build -o $(BIN) $(SRC)
-
 deploy: build
-	zip $(ZIP) $(BIN)
-	aws lambda update-function-code --function-name $(ARN) --zip-file fileb://${ZIP}
+	(cd $(BINDIR) && zip -FS $(ZIPFILE) $(BINARY))
+	aws lambda update-function-code --function-name $(ARN) --zip-file fileb://$(BINDIR)/$(ZIPFILE)
 	
 test: deps
 	go test -v ./... -cover
