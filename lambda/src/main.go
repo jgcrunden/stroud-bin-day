@@ -12,7 +12,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/dynamodb/dynamodbiface"
 	"golang.org/x/net/html"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"sort"
@@ -130,7 +129,7 @@ func lookupUPRNForPostcodeViaAPI(url string, client *http.Client) (UPRN int64) {
 
 	var ir IdealResult
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("Error reading body %v\n", err)
 		return
@@ -177,7 +176,7 @@ func getMyHousePageFromStroudGov(UPRN int64, client *http.Client, url string) (p
 		return
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("error reading body %s\n", err)
 		return
@@ -347,7 +346,7 @@ func getUserPostcode(deviceID string, accessToken string, apiEndpoint string, cl
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return
 	}

@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Build lambda
         run: |
           (cd lambda && make build)
@@ -20,8 +20,6 @@ jobs:
           sed -i "s/LAMBDA_ARN/${{ secrets.LAMBDA_ARN}}/" skill-package/skill.json
           sed -i -e "s/SKILL_ID/${{ secrets.SKILL_ID }}/" -e "s/BUCKET_NAME/${{ secrets.BUCKET_NAME }}/" -e "s|STACK_ID|${{ secrets.STACK_ID }}|" .ask/ask-states.json
           sudo chown 1000:1000 -R .
-          ls -al
-          ls -al lambda/bin
       - name: Alexa ASK AWS CLI Deploy
         uses: xavidop/alexa-ask-aws-cli-docker@v1.0.6
         id: ask
